@@ -1,14 +1,16 @@
 import { paymentMiddleware } from 'x402-next';
-import { facilitator } from '@coinbase/x402';
+import { facilitator } from "@coinbase/x402"; // For mainnet
 
+// Configure the payment middleware
 export const middleware = paymentMiddleware(
-  "0xeE206B1BE6960c863fDEd818752AD7B2e463e91e", // 接收钱包地址
-  {
+  "0x8b12a3c1AC1D1356cB24A642daFCA8f0f60cDeF2", // your receiving wallet address
+  {  // Route configurations for protected endpoints
     '/protected': {
       price: '$0.01',
-      network: "base",      // 主网网络标识
+      network: "base-sepolia", // for mainnet, see Running on Mainnet section
       config: {
         description: 'Access to protected content',
+        // Optional: Add schemas for better discovery
         inputSchema: {
           type: "object",
           properties: {}
@@ -20,11 +22,14 @@ export const middleware = paymentMiddleware(
           }
         }
       }
-    }
+    },
   },
-  facilitator  // 使用主网 facilitator
+  {
+    url: "https://facilitator.mogami.tech", // for testnet
+  }
 );
 
+// Configure which paths the middleware should run on
 export const config = {
   matcher: [
     '/protected/:path*',
